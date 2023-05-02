@@ -1,3 +1,7 @@
+export interface UserData {
+  username: string
+}
+
 export interface PostData {
   id: number
   username: string
@@ -6,6 +10,9 @@ export interface PostData {
   content: string
 }
 
-export interface UserData {
-  username: string
+export interface PageData {
+  count: number
+  next: string | null
+  previous: string | null
+  results: PostData[]
 }
