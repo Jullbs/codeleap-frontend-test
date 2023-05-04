@@ -1,20 +1,24 @@
-import { ModalType } from '@/types'
+import { ModalType, PostData } from '@/types'
 import * as Dialog from '@radix-ui/react-dialog'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { toast } from 'react-toastify'
+import { useSWRConfig } from 'swr'
+// eslint-disable-next-line camelcase
+import { unstable_serialize } from 'swr/infinite'
+import { getKey } from '@/pages/feed'
 
 interface ModalProps {
   modalType: ModalType
   setOpen: (value: boolean) => void
-  postId: number
+  post: PostData
 }
 
 interface ModalTypeProps {
   setOpen: ModalProps['setOpen']
-  postId: number
+  post: PostData
 }
 
 interface UpdatedDataType {
@@ -33,7 +37,8 @@ const updatePostValidationSchema = zod.object({
 
 export type UpdatePostData = zod.infer<typeof updatePostValidationSchema>
 
-function EditModal({ setOpen, postId }: ModalTypeProps) {
+function EditModal({ setOpen, post }: ModalTypeProps) {
+  const { mutate } = useSWRConfig()
   const {
     register,
     handleSubmit,
@@ -41,7 +46,7 @@ function EditModal({ setOpen, postId }: ModalTypeProps) {
     formState: { errors, dirtyFields },
   } = useForm<UpdatePostData>({
     resolver: zodResolver(updatePostValidationSchema),
-    defaultValues: { updatedTitle: '', updatedContent: '' },
+    defaultValues: { updatedTitle: post.title, updatedContent: post.content },
   })
 
   const onSubmit = (updatedData: UpdatedDataType) => {
@@ -51,10 +56,11 @@ function EditModal({ setOpen, postId }: ModalTypeProps) {
     }
 
     axios
-      .patch(`https://dev.codeleap.co.uk/careers/${postId}/`, postUpdatedData)
+      .patch(`https://dev.codeleap.co.uk/careers/${post.id}/`, postUpdatedData)
       .then(function () {
         reset()
         setOpen(false)
+        mutate(unstable_serialize(getKey))
         toast.success('Your post has been updated!')
       })
       .catch(function (error) {
@@ -111,7 +117,7 @@ function EditModal({ setOpen, postId }: ModalTypeProps) {
           </button>
           <button
             type="submit"
-            disabled={!dirtyFields.updatedTitle || !dirtyFields.updatedContent}
+            disabled={!dirtyFields.updatedTitle && !dirtyFields.updatedContent}
             className="default-button-pattern text-white bg-green-400"
           >
             Confirm
@@ -122,12 +128,15 @@ function EditModal({ setOpen, postId }: ModalTypeProps) {
   )
 }
 
-function DeleteModal({ setOpen, postId }: ModalTypeProps) {
+function DeleteModal({ setOpen, post }: ModalTypeProps) {
+  const { mutate } = useSWRConfig()
+
   function handleDeletePost() {
     axios
-      .delete(`https://dev.codeleap.co.uk/careers/${postId}/`)
+      .delete(`https://dev.codeleap.co.uk/careers/${post.id}/`)
       .then(function () {
         setOpen(false)
+        mutate(unstable_serialize(getKey))
         toast.success('Your post has been deleted!')
       })
       .catch(function (error) {
@@ -160,12 +169,12 @@ function DeleteModal({ setOpen, postId }: ModalTypeProps) {
   )
 }
 
-export default function PostModal({ modalType, setOpen, postId }: ModalProps) {
+export default function PostModal({ modalType, setOpen, post }: ModalProps) {
   switch (modalType) {
     case 'edit':
-      return <EditModal setOpen={setOpen} postId={postId} />
+      return <EditModal setOpen={setOpen} post={post} />
     case 'delete':
-      return <DeleteModal setOpen={setOpen} postId={postId} />
+      return <DeleteModal setOpen={setOpen} post={post} />
     default:
       return null
   }

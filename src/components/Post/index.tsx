@@ -57,7 +57,7 @@ export default function Post({ post, loggedUser }: PostProps) {
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal className="fixed">
           <Dialog.Overlay className="fixed w-screen h-screen inset-0 z-20 bg-black/50" />
-          <PostModal modalType={modalType} setOpen={setOpen} postId={post.id} />
+          <PostModal modalType={modalType} setOpen={setOpen} post={post} />
         </Dialog.Portal>
       </Dialog.Root>
 

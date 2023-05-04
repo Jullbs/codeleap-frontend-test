@@ -5,33 +5,30 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useSWRConfig } from 'swr/_internal'
-// eslint-disable-next-line camelcase
-import useSWRInfinite, { unstable_serialize } from 'swr/infinite'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import useSWRInfinite from 'swr/infinite'
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
+export const getKey = (pageIndex: number, previousPageData: PageData) => {
+  // no more pages
+  if (previousPageData && !previousPageData.next) return null
+
+  // first page
+  if (pageIndex === 0) return `https://dev.codeleap.co.uk/careers/?limit=10`
+
+  return previousPageData.next
+}
+
 export default function Feed() {
   const [loggedUser, setLoggedUser] = useState<string | undefined>(undefined)
-  const { mutate } = useSWRConfig()
 
   const router = useRouter()
 
-  const getKey = (pageIndex: number, previousPageData: PageData) => {
-    // no more pages
-    if (previousPageData && !previousPageData.next) return null
-
-    // first page
-    if (pageIndex === 0) return `https://dev.codeleap.co.uk/careers/?limit=10`
-
-    return previousPageData.next
-  }
-
   const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
 
-  function revalidateSWRData() {
-    mutate(unstable_serialize(getKey))
-  }
+  const isEmpty = data?.[0]?.length === 0
+  const isReachedEnd = isEmpty || (data && data[data.length - 1]?.length < 10)
 
   useEffect(() => {
     const username = localStorage.getItem(
@@ -56,25 +53,30 @@ export default function Feed() {
       </Head>
       <main className="w-full flex justify-center">
         <section className="bg-white max-w-[50rem] w-full p-6 flex flex-col gap-6">
-          <NewPost
-            loggedUser={loggedUser}
-            revalidateSWRData={revalidateSWRData}
-          />
+          <NewPost loggedUser={loggedUser} />
 
-          {data &&
-            data.map((page) =>
-              page.results.map((post: PostData) => {
-                return (
-                  <Post key={post.id} post={post} loggedUser={loggedUser} />
-                )
-              }),
-            )}
-          <button
-            onClick={() => setSize(size + 1)}
-            className="default-button-pattern default-transition bg-white border-gray-300 border-[1px] rounded-lg text-gray-400 hover:drop-shadow-lg"
-          >
-            Carregar mais
-          </button>
+          {data && (
+            <InfiniteScroll
+              dataLength={data.length}
+              next={() => setSize(size + 1)}
+              hasMore={!isReachedEnd}
+              loader={<h4 className="self-center text-gray-400">Loading...</h4>}
+              endMessage={
+                <p className="font-bold text-gray-400 self-center">
+                  Yay! You have seen all the posts.
+                </p>
+              }
+              className="flex flex-col gap-8"
+            >
+              {data.map((page) =>
+                page.results.map((post: PostData) => {
+                  return (
+                    <Post key={post.id} post={post} loggedUser={loggedUser} />
+                  )
+                }),
+              )}
+            </InfiniteScroll>
+          )}
         </section>
       </main>
     </>

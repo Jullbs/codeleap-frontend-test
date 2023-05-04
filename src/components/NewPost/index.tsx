@@ -3,10 +3,13 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 import { toast } from 'react-toastify'
+import { useSWRConfig } from 'swr'
+// eslint-disable-next-line camelcase
+import { unstable_serialize } from 'swr/infinite'
+import { getKey } from '@/pages/feed'
 
 interface NewPostProps {
   loggedUser: string | undefined
-  revalidateSWRData: () => void
 }
 
 interface FormData {
@@ -25,10 +28,8 @@ const newPostValidationSchema = zod.object({
 
 export type NewPostData = zod.infer<typeof newPostValidationSchema>
 
-export default function NewPost({
-  loggedUser,
-  revalidateSWRData,
-}: NewPostProps) {
+export default function NewPost({ loggedUser }: NewPostProps) {
+  const { mutate } = useSWRConfig()
   const {
     register,
     handleSubmit,
@@ -56,7 +57,7 @@ export default function NewPost({
       })
 
     reset()
-    revalidateSWRData()
+    mutate(unstable_serialize(getKey))
   }
 
   return (
