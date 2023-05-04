@@ -5,12 +5,15 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import useSWRInfinite from 'swr/infinite'
+import { useSWRConfig } from 'swr/_internal'
+// eslint-disable-next-line camelcase
+import useSWRInfinite, { unstable_serialize } from 'swr/infinite'
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
 export default function Feed() {
   const [loggedUser, setLoggedUser] = useState<string | undefined>(undefined)
+  const { mutate } = useSWRConfig()
 
   const router = useRouter()
 
@@ -25,6 +28,10 @@ export default function Feed() {
   }
 
   const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
+
+  function revalidateSWRData() {
+    mutate(unstable_serialize(getKey))
+  }
 
   useEffect(() => {
     const username = localStorage.getItem(
@@ -49,7 +56,10 @@ export default function Feed() {
       </Head>
       <main className="w-full flex justify-center pt-[5.125rem]">
         <section className="bg-white max-w-[50rem] w-full p-6 flex flex-col gap-6">
-          <NewPost />
+          <NewPost
+            loggedUser={loggedUser}
+            revalidateSWRData={revalidateSWRData}
+          />
 
           {data &&
             data.map((page) =>

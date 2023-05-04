@@ -5,7 +5,7 @@ export interface UserData {
 export interface PostData {
   id: number
   username: string
-  createdAt: string
+  created_datetime: string
   title: string
   content: string
 }

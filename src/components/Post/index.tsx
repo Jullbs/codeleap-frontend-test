@@ -56,7 +56,7 @@ export default function Post({ post, loggedUser }: PostProps) {
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed w-screen h-screen inset-0 z-20 bg-black/50" />
-          <PostModal modalType={modalType} setOpen={setOpen} />
+          <PostModal modalType={modalType} setOpen={setOpen} postId={post.id} />
         </Dialog.Portal>
       </Dialog.Root>
 
@@ -64,15 +64,15 @@ export default function Post({ post, loggedUser }: PostProps) {
         <h3 className="text-white font-bold text-xl leading-[1.375rem]">
           {post.title}
         </h3>
-        {/* {loggedUser === post.username && ( */}
-        <InteractionButtons handleOpenModal={handleOpenModal} />
-        {/* // )} */}
+        {loggedUser === post.username && (
+          <InteractionButtons handleOpenModal={handleOpenModal} />
+        )}
       </div>
 
       <div className="flex flex-col p-6 gap-2 border-gray-400 border-[1px] border-t-0 rounded-b-lg">
         <span className="flex justify-between text-lg leading-[1.125rem] text-gray-400">
           <p className="font-bold">@{post.username}</p>
-          <p>{post.createdAt}</p>
+          <p>{post.created_datetime}</p>
         </span>
         <p className="text-lg leading-5">{post.content}</p>
       </div>

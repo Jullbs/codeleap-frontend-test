@@ -1,46 +1,76 @@
 import { ModalType } from '@/types'
 import * as Dialog from '@radix-ui/react-dialog'
+import axios from 'axios'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface ModalProps {
   modalType: ModalType
   setOpen: (value: boolean) => void
+  postId: number
 }
 
 interface ModalTypeProps {
   setOpen: ModalProps['setOpen']
+  postId: number
 }
 
-function EditModal({ setOpen }: ModalTypeProps) {
+interface UpdatedDataType {
+  updatedTitle: string
+  updatedContent: string
+}
+
+function EditModal({ setOpen, postId }: ModalTypeProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { dirtyFields },
-  } = useForm({ defaultValues: { title: '', content: '' } })
-  const onSubmit = (data: any) => console.log(data)
+  } = useForm({ defaultValues: { updatedTitle: '', updatedContent: '' } })
+
+  const onSubmit = (updatedData: UpdatedDataType) => {
+    const postUpdatedData = {
+      title: updatedData.updatedTitle,
+      content: updatedData.updatedContent,
+    }
+
+    axios
+      .patch(`https://dev.codeleap.co.uk/careers/${postId}/`, postUpdatedData)
+      .then(function () {
+        reset()
+        setOpen(false)
+        toast.success('Your post has been updated!')
+      })
+      .catch(function (error) {
+        reset()
+        setOpen(false)
+        console.log(error)
+        toast.error('Something went wrong.')
+      })
+  }
 
   return (
     <Dialog.Content className="fixed z-50 max-w-[41.25rem] w-full p-6 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-2xl">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <h2 className="font-bold text-xl leading-[1.625rem]">Edit item</h2>
         <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="leading-[1.125rem]">
+          <label htmlFor="updatedTitle" className="leading-[1.125rem]">
             Title
           </label>
           <input
-            {...register('title', { required: true })}
-            id="title"
+            {...register('updatedTitle', { required: true })}
+            id="updatedTitle"
             placeholder="Hello World"
             className="default-input-pattern"
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="content" className="leading-[1.125rem]">
+          <label htmlFor="updatedContent" className="leading-[1.125rem]">
             Content
           </label>
           <input
-            {...register('content', { required: true })}
-            id="content"
+            {...register('updatedContent', { required: true })}
+            id="updatedContent"
             placeholder="Content here"
             className="default-input-pattern"
           />
@@ -52,19 +82,34 @@ function EditModal({ setOpen }: ModalTypeProps) {
           >
             Cancel
           </button>
-          <input
+          <button
             type="submit"
-            placeholder="Confirm"
-            disabled={!dirtyFields.title || !dirtyFields.content}
+            disabled={!dirtyFields.updatedTitle || !dirtyFields.updatedContent}
             className="default-button-pattern text-white bg-green-400"
-          />
+          >
+            Confirm
+          </button>
         </div>
       </form>
     </Dialog.Content>
   )
 }
 
-function DeleteModal({ setOpen }: ModalTypeProps) {
+function DeleteModal({ setOpen, postId }: ModalTypeProps) {
+  function handleDeletePost() {
+    axios
+      .delete(`https://dev.codeleap.co.uk/careers/${postId}/`)
+      .then(function () {
+        setOpen(false)
+        toast.success('Your post has been deleted!')
+      })
+      .catch(function (error) {
+        setOpen(false)
+        console.log(error)
+        toast.error('Something went wrong.')
+      })
+  }
+
   return (
     <Dialog.Content className="fixed flex flex-col gap-8 z-50 max-w-[41.25rem] w-full p-6 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white rounded-2xl">
       <h2 className="font-bold text-xl leading-[1.625rem]">
@@ -77,7 +122,10 @@ function DeleteModal({ setOpen }: ModalTypeProps) {
         >
           Cancel
         </button>
-        <button className="default-button-pattern text-white bg-red-400 enabled:hover:bg-red-500">
+        <button
+          onClick={() => handleDeletePost()}
+          className="default-button-pattern text-white bg-red-400 enabled:hover:bg-red-500"
+        >
           Delete
         </button>
       </span>
@@ -85,12 +133,12 @@ function DeleteModal({ setOpen }: ModalTypeProps) {
   )
 }
 
-export default function PostModal({ modalType, setOpen }: ModalProps) {
+export default function PostModal({ modalType, setOpen, postId }: ModalProps) {
   switch (modalType) {
     case 'edit':
-      return <EditModal setOpen={setOpen} />
+      return <EditModal setOpen={setOpen} postId={postId} />
     case 'delete':
-      return <DeleteModal setOpen={setOpen} />
+      return <DeleteModal setOpen={setOpen} postId={postId} />
     default:
       return null
   }
