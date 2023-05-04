@@ -62,7 +62,7 @@ export default function Post({ post, loggedUser }: PostProps) {
       </Dialog.Root>
 
       <div className="flex justify-between items-center p-6 bg-lilac-300 rounded-t-lg">
-        <h3 className="text-white font-bold text-xl leading-[1.375rem]">
+        <h3 className="text-white font-bold text-xl leading-[1.375rem] truncate">
           {post.title}
         </h3>
         {loggedUser === post.username && (
@@ -75,7 +75,7 @@ export default function Post({ post, loggedUser }: PostProps) {
           <p className="font-bold truncate">@{post.username}</p>
           <p>{getFormattedDate(post.created_datetime)}</p>
         </span>
-        <p className="text-lg leading-5">{post.content}</p>
+        <p className="text-lg leading-5 break-words">{post.content}</p>
       </div>
     </div>
   )

@@ -27,8 +27,10 @@ export default function Feed() {
 
   const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
 
-  const isEmpty = data?.[0]?.length === 0
-  const isReachedEnd = isEmpty || (data && data[data.length - 1]?.length < 10)
+  console.log(data)
+
+  const isEmpty = data?.[0]?.next === null
+  const isReachedEnd = isEmpty || (data && data[data.length - 1]?.next === null)
 
   useEffect(() => {
     const username = localStorage.getItem(
