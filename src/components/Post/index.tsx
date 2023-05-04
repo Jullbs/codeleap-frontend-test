@@ -16,7 +16,7 @@ interface InteractionButtonsProps {
 
 function InteractionButtons({ handleOpenModal }: InteractionButtonsProps) {
   return (
-    <span className="flex items-center gap-6 m-[-0.5rem]">
+    <span className="flex items-center gap-1 sm:gap-6 m-[-0.5rem]">
       <button onClick={() => handleOpenModal('delete')}>
         <Icon
           icon="ic:baseline-delete-forever"
@@ -61,7 +61,7 @@ export default function Post({ post, loggedUser }: PostProps) {
         </Dialog.Portal>
       </Dialog.Root>
 
-      <div className="flex justify-between items-center p-6 bg-lilac-300 rounded-t-lg">
+      <div className="flex justify-between items-center p-6 bg-lilac-300 rounded-t-lg gap-1">
         <h3 className="text-white font-bold text-xl leading-[1.375rem] truncate">
           {post.title}
         </h3>
