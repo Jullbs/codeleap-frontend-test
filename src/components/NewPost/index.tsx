@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
 import { toast } from 'react-toastify'
 
 interface NewPostProps {
@@ -12,6 +14,17 @@ interface FormData {
   content: string
 }
 
+const newPostValidationSchema = zod.object({
+  title: zod
+    .string()
+    .max(30, { message: 'Post title must have a maximum of 30 characters.' }),
+  content: zod.string().max(500, {
+    message: 'Post content must have a maximum of 500 characters.',
+  }),
+})
+
+export type NewPostData = zod.infer<typeof newPostValidationSchema>
+
 export default function NewPost({
   loggedUser,
   revalidateSWRData,
@@ -20,8 +33,11 @@ export default function NewPost({
     register,
     handleSubmit,
     reset,
-    formState: { dirtyFields },
-  } = useForm({ defaultValues: { title: '', content: '' } })
+    formState: { errors, dirtyFields },
+  } = useForm<NewPostData>({
+    resolver: zodResolver(newPostValidationSchema),
+    defaultValues: { title: '', content: '' },
+  })
 
   const onSubmit = async (data: FormData) => {
     const postData = {
@@ -60,6 +76,11 @@ export default function NewPost({
             className="default-input-pattern"
             {...register('title', { required: true })}
           />
+          {errors.title && (
+            <p className="text-red-400 text-xs">
+              &apos;{errors.title.message}&apos;
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <label className="leading-[1.1875rem]">Content</label>
@@ -69,6 +90,11 @@ export default function NewPost({
             className="default-input-pattern"
             {...register('content', { required: true })}
           ></textarea>
+          {errors.content && (
+            <p className="text-red-400 text-xs">
+              &apos;{errors.content.message}&apos;
+            </p>
+          )}
         </div>
         <button
           type="submit"

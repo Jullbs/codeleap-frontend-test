@@ -2,6 +2,8 @@ import { ModalType } from '@/types'
 import * as Dialog from '@radix-ui/react-dialog'
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
 import { toast } from 'react-toastify'
 
 interface ModalProps {
@@ -20,13 +22,27 @@ interface UpdatedDataType {
   updatedContent: string
 }
 
+const updatePostValidationSchema = zod.object({
+  updatedTitle: zod
+    .string()
+    .max(30, { message: 'Post title must have a maximum of 30 characters.' }),
+  updatedContent: zod.string().max(500, {
+    message: 'Post content must have a maximum of 500 characters.',
+  }),
+})
+
+export type UpdatePostData = zod.infer<typeof updatePostValidationSchema>
+
 function EditModal({ setOpen, postId }: ModalTypeProps) {
   const {
     register,
     handleSubmit,
     reset,
-    formState: { dirtyFields },
-  } = useForm({ defaultValues: { updatedTitle: '', updatedContent: '' } })
+    formState: { errors, dirtyFields },
+  } = useForm<UpdatePostData>({
+    resolver: zodResolver(updatePostValidationSchema),
+    defaultValues: { updatedTitle: '', updatedContent: '' },
+  })
 
   const onSubmit = (updatedData: UpdatedDataType) => {
     const postUpdatedData = {
@@ -63,17 +79,28 @@ function EditModal({ setOpen, postId }: ModalTypeProps) {
             placeholder="Hello World"
             className="default-input-pattern"
           />
+          {errors.updatedTitle && (
+            <p className="text-red-400 text-xs">
+              &apos;{errors.updatedTitle.message}&apos;
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="updatedContent" className="leading-[1.125rem]">
             Content
           </label>
-          <input
+          <textarea
+            rows={4}
             {...register('updatedContent', { required: true })}
             id="updatedContent"
             placeholder="Content here"
             className="default-input-pattern"
-          />
+          ></textarea>
+          {errors.updatedContent && (
+            <p className="text-red-400 text-xs">
+              &apos;{errors.updatedContent.message}&apos;
+            </p>
+          )}
         </div>
         <div className="flex justify-end gap-4">
           <button

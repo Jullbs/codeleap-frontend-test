@@ -1,14 +1,27 @@
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { UserData } from '@/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+
+const usernameValidationSchema = zod.object({
+  username: zod
+    .string()
+    .max(15, { message: 'Username must have a maximum of 15 characters.' }),
+})
+
+export type UsernameData = zod.infer<typeof usernameValidationSchema>
 
 export default function SignUp() {
   const router = useRouter()
   const {
     register,
     handleSubmit,
-    formState: { isDirty },
-  } = useForm({ defaultValues: { username: '' } })
+    formState: { errors, isDirty },
+  } = useForm<UsernameData>({
+    resolver: zodResolver(usernameValidationSchema),
+    defaultValues: { username: '' },
+  })
 
   const onSubmit = (data: UserData) => {
     localStorage.setItem(
@@ -30,6 +43,11 @@ export default function SignUp() {
           {...register('username', { required: true })}
           className="default-input-pattern"
         />
+        {errors.username && (
+          <p className="text-red-400 text-xs">
+            &apos;{errors.username.message}&apos;
+          </p>
+        )}
         <input
           type="submit"
           disabled={!isDirty}
