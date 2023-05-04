@@ -28,13 +28,13 @@ export default function SignUp() {
           type="text"
           placeholder="John Doe"
           {...register('username', { required: true })}
-          className="p-2 text-sm leading-4 border-gray-400 border-[1px] rounded-lg focus:outline-lilac-400"
+          className="default-input-pattern"
         />
         <input
           type="submit"
           disabled={!isDirty}
           value="ENTER"
-          className="bg-lilac-300 self-end mt-2 px-8 py-2 rounded-lg font-bold text-white leading-[1.125rem] disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-lilac-400 hover:cursor-pointer"
+          className="bg-lilac-300 self-end text-white enabled:hover:bg-lilac-400 default-button-pattern"
         />
       </form>
     </section>

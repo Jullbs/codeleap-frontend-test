@@ -11,7 +11,20 @@ const fetcher = (url: string) => axios.get(url).then((res) => res.data)
 
 export default function Feed() {
   const [loggedUser, setLoggedUser] = useState<string | undefined>(undefined)
+
   const router = useRouter()
+
+  const getKey = (pageIndex: number, previousPageData: PageData) => {
+    // no more pages
+    if (previousPageData && !previousPageData.next) return null
+
+    // first page
+    if (pageIndex === 0) return `https://dev.codeleap.co.uk/careers/?limit=10`
+
+    return previousPageData.next
+  }
+
+  const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
 
   useEffect(() => {
     const username = localStorage.getItem(
@@ -26,17 +39,6 @@ export default function Feed() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const getKey = (pageIndex: number, previousPageData: PageData) => {
-    if (previousPageData && !previousPageData.next) return null
-
-    // primeira página
-    if (pageIndex === 0) return `https://dev.codeleap.co.uk/careers/?limit=10`
-
-    return previousPageData.next
-  }
-
-  const { data, size, setSize } = useSWRInfinite(getKey, fetcher)
-
   return (
     <>
       <Head>
@@ -46,7 +48,7 @@ export default function Feed() {
         <link rel="icon" href="/logo.ico" />
       </Head>
       <main className="w-full flex justify-center pt-[5.125rem]">
-        <div className="bg-white max-w-[50rem] w-full p-6 flex flex-col gap-6">
+        <section className="bg-white max-w-[50rem] w-full p-6 flex flex-col gap-6">
           <NewPost />
 
           {data &&
@@ -58,7 +60,7 @@ export default function Feed() {
               }),
             )}
           <button onClick={() => setSize(size + 1)}>Carregar mais</button>
-        </div>
+        </section>
       </main>
     </>
   )

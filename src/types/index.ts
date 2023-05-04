@@ -16,3 +16,5 @@ export interface PageData {
   previous: string | null
   results: PostData[]
 }
+
+export type ModalType = 'edit' | 'delete' | undefined

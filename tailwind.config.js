@@ -17,6 +17,7 @@ module.exports = {
         'lilac-400': '#667fca',
         'green-400': '#47B960',
         'red-400': '#FF5151',
+        'red-500': '#cc4040',
       },
     },
   },
