@@ -32,7 +32,10 @@ export default function Header() {
 
         <span className="flex items-center gap-6">
           <p className="font-bold">@{loggedUser}</p>
-          <button onClick={logOutUser}>
+          <button
+            onClick={logOutUser}
+            className="rounded-lg p-1 default-transition hover:bg-lilac-400 hover:drop-shadow-lg"
+          >
             <Icon
               icon="material-symbols:logout"
               className="w-[1.875rem] h-[1.875rem]"

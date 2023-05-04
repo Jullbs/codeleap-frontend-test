@@ -4,9 +4,12 @@
 
 @layer components {
   .default-button-pattern {
-    @apply mt-2 px-8 py-2 rounded-lg font-bold leading-[1.125rem] disabled:bg-gray-400 disabled:cursor-not-allowed hover:cursor-pointer
+    @apply mt-2 px-8 py-2 rounded-lg font-bold leading-[1.125rem] disabled:bg-gray-400 disabled:cursor-not-allowed hover:cursor-pointer enabled:hover:drop-shadow-lg
   }
   .default-input-pattern {
     @apply p-2 text-sm leading-4 border-gray-400 border-[1px] rounded-lg focus:outline-lilac-400
+  }
+  .default-transition {
+    @apply transition ease-in duration-300
   }
 }

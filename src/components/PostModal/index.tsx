@@ -105,7 +105,7 @@ function EditModal({ setOpen, postId }: ModalTypeProps) {
         <div className="flex justify-end gap-4">
           <button
             onClick={() => setOpen(false)}
-            className="default-button-pattern border-gray-400 border-[1px] rounded-lg enabled:hover:bg-gray-300 enabled:hover:border-gray-300"
+            className="default-button-pattern border-gray-400 border-[1px] rounded-lg enabled:hover:bg-white enabled:hover:border-gray-300"
           >
             Cancel
           </button>
@@ -145,7 +145,7 @@ function DeleteModal({ setOpen, postId }: ModalTypeProps) {
       <span className="flex justify-end gap-4">
         <button
           onClick={() => setOpen(false)}
-          className="default-button-pattern border-gray-400 border-[1px] rounded-lg enabled:hover:bg-gray-300 enabled:hover:border-gray-300"
+          className="default-button-pattern border-gray-400 border-[1px] rounded-lg enabled:hover:bg-white enabled:hover:border-gray-300"
         >
           Cancel
         </button>

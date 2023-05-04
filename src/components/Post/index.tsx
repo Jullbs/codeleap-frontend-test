@@ -16,17 +16,17 @@ interface InteractionButtonsProps {
 
 function InteractionButtons({ handleOpenModal }: InteractionButtonsProps) {
   return (
-    <span className="flex items-center gap-6">
+    <span className="flex items-center gap-6 m-[-0.5rem]">
       <button onClick={() => handleOpenModal('delete')}>
         <Icon
           icon="ic:baseline-delete-forever"
-          className="w-[1.875rem] h-[1.875rem] text-white"
+          className="w-[2.375rem] h-[2.375rem] text-white rounded-lg p-1 default-transition hover:bg-lilac-400 hover:drop-shadow-lg"
         />
       </button>
       <button onClick={() => handleOpenModal('edit')}>
         <Icon
           icon="bx:bx-edit"
-          className="w-[1.875rem] h-[1.875rem] text-white"
+          className="w-[2.375rem] h-[2.375rem] text-white rounded-lg p-1 default-transition hover:bg-lilac-400 hover:drop-shadow-lg"
         />
       </button>
     </span>
@@ -71,8 +71,8 @@ export default function Post({ post, loggedUser }: PostProps) {
       </div>
 
       <div className="flex flex-col p-6 gap-2 border-gray-400 border-[1px] border-t-0 rounded-b-lg">
-        <span className="flex justify-between text-lg leading-[1.125rem] text-gray-400">
-          <p className="font-bold">@{post.username}</p>
+        <span className="flex flex-wrap gap-2 justify-between text-lg leading-[1.125rem] text-gray-400">
+          <p className="font-bold truncate">@{post.username}</p>
           <p>{getFormattedDate(post.created_datetime)}</p>
         </span>
         <p className="text-lg leading-5">{post.content}</p>

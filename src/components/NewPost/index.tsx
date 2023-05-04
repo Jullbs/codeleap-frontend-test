@@ -99,7 +99,7 @@ export default function NewPost({
         <button
           type="submit"
           disabled={!dirtyFields.title || !dirtyFields.content}
-          className="bg-lilac-300 self-end default-button-pattern text-white enabled:hover:bg-lilac-400"
+          className="bg-lilac-300 self-end default-button-pattern default-transition text-white enabled:hover:bg-lilac-400"
         >
           CREATE
         </button>

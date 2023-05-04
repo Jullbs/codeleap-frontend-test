@@ -69,7 +69,12 @@ export default function Feed() {
                 )
               }),
             )}
-          <button onClick={() => setSize(size + 1)}>Carregar mais</button>
+          <button
+            onClick={() => setSize(size + 1)}
+            className="default-button-pattern default-transition bg-white border-gray-300 border-[1px] rounded-lg text-gray-400 hover:drop-shadow-lg"
+          >
+            Carregar mais
+          </button>
         </section>
       </main>
     </>

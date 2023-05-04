@@ -52,7 +52,7 @@ export default function SignUp() {
           type="submit"
           disabled={!isDirty}
           value="ENTER"
-          className="bg-lilac-300 self-end text-white enabled:hover:bg-lilac-400 default-button-pattern"
+          className="bg-lilac-300 self-end text-white enabled:hover:bg-lilac-400 default-button-pattern default-transition"
         />
       </form>
     </section>
