@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useState } from 'react'
 import PostModal from '../PostModal'
+import getFormattedDate from '@/util/getFormattedDate'
 
 interface PostProps {
   post: PostData
@@ -72,7 +73,7 @@ export default function Post({ post, loggedUser }: PostProps) {
       <div className="flex flex-col p-6 gap-2 border-gray-400 border-[1px] border-t-0 rounded-b-lg">
         <span className="flex justify-between text-lg leading-[1.125rem] text-gray-400">
           <p className="font-bold">@{post.username}</p>
-          <p>{post.created_datetime}</p>
+          <p>{getFormattedDate(post.created_datetime)}</p>
         </span>
         <p className="text-lg leading-5">{post.content}</p>
       </div>
