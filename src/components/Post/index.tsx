@@ -55,7 +55,7 @@ export default function Post({ post, loggedUser }: PostProps) {
   return (
     <div className="flex flex-col">
       <Dialog.Root open={open} onOpenChange={setOpen}>
-        <Dialog.Portal>
+        <Dialog.Portal className="fixed">
           <Dialog.Overlay className="fixed w-screen h-screen inset-0 z-20 bg-black/50" />
           <PostModal modalType={modalType} setOpen={setOpen} postId={post.id} />
         </Dialog.Portal>

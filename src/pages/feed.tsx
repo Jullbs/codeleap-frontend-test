@@ -54,7 +54,7 @@ export default function Feed() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.ico" />
       </Head>
-      <main className="w-full flex justify-center pt-[5.125rem]">
+      <main className="w-full flex justify-center">
         <section className="bg-white max-w-[50rem] w-full p-6 flex flex-col gap-6">
           <NewPost
             loggedUser={loggedUser}

@@ -24,8 +24,8 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed w-full flex justify-center text-white">
-      <div className="max-w-[50rem] w-full p-7 flex justify-between bg-lilac-300 ">
+    <header className="sticky top-0 w-full flex justify-center text-white">
+      <div className="max-w-[50rem] w-full p-7 flex justify-between bg-lilac-300">
         <h1 className="font-bold text-xl leading-[1.625rem]">
           CodeLeap Network
         </h1>
